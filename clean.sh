@@ -11,8 +11,8 @@ resultsfile=$(pwd)/flakytests.csv
 rm -rf ${resultsfile}
 
 for p in $(cat ${projfile}); do
-    rm -rf ${slug}
+    rm -rf $(echo ${p} | cut -d'/' -f1)
 done
 
-rm *~
+rm -f *~
 rm -rf run.log
