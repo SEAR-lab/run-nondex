@@ -5,6 +5,8 @@ if [[ $1 == "" ]]; then
     exit
 fi
 
+echo "sha: $(git rev-parse HEAD)"
+echo "date: $(date)"
 projfile=$1
 
 # Setup the output file
@@ -15,5 +17,5 @@ echo "slug,sha,test" > ${resultsfile}
 for p in $(cat ${projfile}); do
     ./run-nondex.sh ${p} ${resultsfile}
     # Cleanup
-    rm -rf ${slug}
+    rm -rf $(echo ${p} | cut -d'/' -f1)
 done

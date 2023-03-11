@@ -12,7 +12,7 @@ slug=$1
 resultsfile=$2
 
 # Download project
-rm -rf ${slug}
+rm -rf $(echo ${slug} | cut -d'/' -f1)
 git clone https://github.com/${slug} ${slug}
 
 # Integrate NonDex
@@ -26,6 +26,8 @@ sha=$(git rev-parse HEAD)
 mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
 
 # Grab all the detected tests
-for t in $(cat $(find -name failures) | sort -u); do
-    echo ${slug},${sha},${t} >> ${resultsfile}
-done
+if [[ "$(find -name failures | wc -l)" != "0" ]]; then 
+    for t in $(cat $(find -name failures) | sort -u); do
+	echo ${slug},${sha},${t} >> ${resultsfile}
+    done
+fi
