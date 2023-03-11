@@ -6,7 +6,7 @@ if [[ $1 == "" ]]; then
 fi
 
 echo "sha: $(git rev-parse HEAD)"
-echo "date: $(date)"
+echo "start date: $(date)"
 projfile=$1
 
 # Setup the output file
@@ -19,3 +19,5 @@ for p in $(cat ${projfile}); do
     # Cleanup
     rm -rf $(echo ${p} | cut -d'/' -f1)
 done
+
+echo "end date: $(date)"
