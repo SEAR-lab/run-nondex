@@ -12,6 +12,7 @@ slug=$1
 resultsfile=$2
 
 # Download project
+rm -rf ${slug}
 git clone https://github.com/${slug} ${slug}
 
 # Integrate NonDex
@@ -22,7 +23,7 @@ cd ${slug}
 sha=$(git rev-parse HEAD)
 
 # Run NonDex, NUMROUNDS rounds
-mvn nondex:nondex -DnondexRuns=${NUMROUNDS}
+mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
 
 # Grab all the detected tests
 for t in $(cat $(find -name failures) | sort -u); do
