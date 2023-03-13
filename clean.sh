@@ -7,9 +7,6 @@ fi
 
 projfile=$1
 
-resultsfile=$(pwd)/flakytests.csv
-rm -rf ${resultsfile}
-
 for p in $(cat ${projfile}); do
     rm -rf $(echo ${p} | cut -d'/' -f1)
 done

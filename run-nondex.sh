@@ -23,7 +23,7 @@ cd ${slug}
 sha=$(git rev-parse HEAD)
 
 # Run NonDex, NUMROUNDS rounds
-mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
+timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
 
 # Grab all the detected tests
 if [[ "$(find -name failures | wc -l)" != "0" ]]; then 
