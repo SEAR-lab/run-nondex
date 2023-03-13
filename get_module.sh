@@ -6,35 +6,41 @@ if [[ $1 == "" ]]; then
 fi
 
 projfile=$1
+dir=$(pwd)
 
 for p in $(cut -d, -f1 ${projfile} | sort -u); do
-    rm -rf $(echo ${p} | cut -d'/' -f1)
-    git clone https://github.com/${p} ${p}
+    cd $dir
+    mkdir -p projs/
+    if [[ ! -d "projs/${p}" ]]; then
+	git clone https://github.com/${p} projs/${p}
+    fi
 
     for line in $(grep $p, ${projfile}); do
 	class=$(echo $line | cut -d, -f3 | cut -d'#' -f1 | rev | cut -d'.' -f1 | rev)
+	cd $dir/projs/$p
+
 	classloc=$(find -name $class.java)
 	if [[ -z $classloc ]]; then
 	    echo $line,NO_CLASS_NAME
 	    continue
 	fi
+
 	classcount=$(find -name $class.java | wc -l)
 	if [[ "$classcount" != "1" ]]; then
-	    classloc=$(find -name $class.java | head -n 1)
 	    echo $line,MULTI_CLASS_NAME
+	    continue
 	fi
 
-	if [[ -z $module ]]; then
-	    module=$classloc
-	    while [[ "$module" != "." && "$module" != "" ]]; do
-		module=$(echo $module | rev | cut -d'/' -f2- | rev)
-		if [[ -f $module/pom.xml ]]; then
-		    break;
-		fi
-	    done
-	    echo $line,$module
+	module=$classloc
+
+	while [[ "$module" != "." && "$module" != "" ]]; do
+	    module=$(echo $module | rev | cut -d'/' -f2- | rev)
+	    if [[ -f $module/pom.xml ]]; then
+		break;
+	    fi
+	done
+	echo $line,$module
     done
-    rm -rf $(echo ${p} | cut -d'/' -f1)
 done
 
 rm -f *~

@@ -1,2 +1,10 @@
 apache/druid always hangs even with timeout
 768 tests got flagged in redis/jedis which seems wrong
+Tests that are removed are in removed-tests.csv
+
+the following were manually resolved:
+apilayer/restcountries,85c3a55d8c9692743d5e54f2a06fe01513ae09a0,eu.fayder.restcountries.v2.CountryServiceTest#getByRegionalBloc,MULTI_CLASS_NAME
+code4craft/tiny-spring,2e0a2ba49c703f33fcca359a97af86094b4ded0d,us.codecraft.tinyioc.context.ApplicationContextTest#testPostBeanProcessor,MULTI_CLASS_NAME
+karatelabs/karate,2c42468d5f32cb32592ad4a46bcf5ff1a4e60a5e,com.intuit.karate.core.FeatureResultTest#testJsonConversion,MULTI_CLASS_NAME
+xianrendzw/EasyReport,b89cc231d469de91450ad9a2412c25b249333267,com.easytoolsoft.easyreport.mybatis.BaseTest#initializationError,MULTI_CLASS_NAME
+xianrendzw/EasyReport,b89cc231d469de91450ad9a2412c25b249333267,com.easytoolsoft.easyreport.mybatis.sharding.service.UserServiceTest#addTest,MULTI_CLASS_NAME
