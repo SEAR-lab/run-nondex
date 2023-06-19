@@ -1,3 +1,5 @@
+Scripts and code to run NonDex to update the iDoFT repository with more tests.
+
 apache/druid always hangs even with timeout
 768 tests got flagged in redis/jedis which seems wrong
 Tests that are removed are in removed-tests.csv
