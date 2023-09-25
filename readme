@@ -10,3 +10,19 @@ code4craft/tiny-spring,2e0a2ba49c703f33fcca359a97af86094b4ded0d,us.codecraft.tin
 karatelabs/karate,2c42468d5f32cb32592ad4a46bcf5ff1a4e60a5e,com.intuit.karate.core.FeatureResultTest#testJsonConversion,MULTI_CLASS_NAME
 xianrendzw/EasyReport,b89cc231d469de91450ad9a2412c25b249333267,com.easytoolsoft.easyreport.mybatis.BaseTest#initializationError,MULTI_CLASS_NAME
 xianrendzw/EasyReport,b89cc231d469de91450ad9a2412c25b249333267,com.easytoolsoft.easyreport.mybatis.sharding.service.UserServiceTest#addTest,MULTI_CLASS_NAME
+
+
+Do NOT use high Java versions with this repo as NonDex simply does NOT work on higher Java versions. Java 8 works, not sure about Java 11.
+
+
+step 1:
+bash run-nondex-on-projects.sh projects.txt |& tee run-nondex.log
+
+step 2 to filter tests:
+grep '#' flakytests.csv | grep -v '{' | grep -v '\[' | grep -v 'redis/jedis,e0e2319b8e44ea3a295e16b698636b7c06625cd7,' | grep -v '#$' | grep -v 'spring-attic/spring-security-oauth,0344de8cc75055742f638b1e476a646a6f5891d9' | sort -u  > flakytests-filtered.csv
+
+step 3:
+bash get_module.sh flakytests-filtered.csv $(pwd)/flakytests-filtered-w-mod.csv
+
+step 4:
+grep -v NO_CLASS_NAME flakytests-filtered-w-mod.csv | grep -v MULTI_CLASS_NAME > flaky-tests-to-add.csv
