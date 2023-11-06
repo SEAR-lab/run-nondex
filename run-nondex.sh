@@ -25,9 +25,17 @@ sha=$(git rev-parse HEAD)
 # Run NonDex, NUMROUNDS rounds
 timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
 
+# Run tests
+timeout 3600s mvn test > test_output.txt 2>&1
+
 # Grab all the detected tests
 if [[ "$(find -name failures | wc -l)" != "0" ]]; then 
     for t in $(cat $(find -name failures) | sort -u); do
-	echo ${slug},${sha},${t} >> ${resultsfile}
+        # If the fully-qualified test name is also present in the test_output file then this test always fails 
+        if ! grep -q $(tr '#' '.' <<< "$t") test_output.txt; then
+            echo "${slug},${sha},${t}" >> "${resultsfile}" 
+        fi
     done
 fi
+
+rm test_output.txt
