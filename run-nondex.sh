@@ -23,19 +23,15 @@ cd ${slug}
 sha=$(git rev-parse HEAD)
 
 # Run NonDex, NUMROUNDS rounds
-timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
+timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS} > nondex_log.txt 2>&1
 
-# Run tests
-timeout 3600s mvn test > test_output.txt 2>&1
+# Tests that passed without shuffling and failed with shuffling
+result=$(sed -n '/Across all seeds:/,/Test results can be found at:/ {/Across all seeds:/! {/Test results can be found at:/! p;};}' nondex_log.txt)
 
-# Grab all the detected tests
-if [[ "$(find -name failures | wc -l)" != "0" ]]; then 
-    for t in $(cat $(find -name failures) | sort -u); do
-        # If the fully-qualified test name is also present in the test_output file then this test always fails 
-        if ! grep -q $(tr '#' '.' <<< "$t") test_output.txt; then
-            echo "${slug},${sha},${t}" >> "${resultsfile}" 
-        fi
-    done
-fi
+IFS=$'\n'
+for line in $result; do
+    t=$(echo "$line" | sed 's/\[[^]]*\] //')
+    echo "${slug},${sha},${t}" >> "${resultsfile}"
+done
 
-rm test_output.txt
+rm nondex_log.txt
