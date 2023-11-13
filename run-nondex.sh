@@ -23,11 +23,15 @@ cd ${slug}
 sha=$(git rev-parse HEAD)
 
 # Run NonDex, NUMROUNDS rounds
-timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS}
+timeout 3600s mvn edu.illinois:nondex-maven-plugin:2.1.1:nondex -DnondexRuns=${NUMROUNDS} > nondex_log.txt 2>&1
 
-# Grab all the detected tests
-if [[ "$(find -name failures | wc -l)" != "0" ]]; then 
-    for t in $(cat $(find -name failures) | sort -u); do
-	echo ${slug},${sha},${t} >> ${resultsfile}
-    done
-fi
+# Tests that passed without shuffling and failed with shuffling
+result=$(sed -n '/Across all seeds:/,/Test results can be found at:/ {/Across all seeds:/! {/Test results can be found at:/! p;};}' nondex_log.txt)
+
+IFS=$'\n'
+for line in $result; do
+    t=$(echo "$line" | sed 's/\[[^]]*\] //')
+    echo "${slug},${sha},${t}" >> "${resultsfile}"
+done
+
+rm nondex_log.txt
